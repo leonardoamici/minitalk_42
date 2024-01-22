@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lamici <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: lamici <lamici@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/27 14:26:17 by lamici            #+#    #+#             */
-/*   Updated: 2023/01/27 14:26:20 by lamici           ###   ########.fr       */
+/*   Updated: 2024/01/16 14:50:38 by lamici           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static int	ft_power(int base, int power)
 	return (res);
 }
 
-void	ft_reconv(int signal, int *pid)
+static void	ft_reconv(int signal, int *pid)
 {
 	static int	i;
 	static int	x;
@@ -62,7 +62,7 @@ void	ft_reconv(int signal, int *pid)
 	kill(newpid, SIGUSR1);
 }
 
-int	ft_pidconv(int signal)
+static int	ft_pidconv(int signal)
 {
 	static int	a;
 	static int	b;
@@ -89,7 +89,7 @@ int	ft_pidconv(int signal)
 	return (pid);
 }
 
-void	ft_sortsig(int signal)
+static void	ft_sortsig(int signal)
 {
 	static int	pid;
 

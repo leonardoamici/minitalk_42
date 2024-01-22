@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   client_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lamici <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: lamici <lamici@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 09:05:57 by lamici            #+#    #+#             */
-/*   Updated: 2023/01/30 09:05:59 by lamici           ###   ########.fr       */
+/*   Updated: 2024/01/19 17:07:40 by lamici           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 
 int		g_check = 0;
 
-void	ft_conv(char c, int pid)
+static void	ft_conv(char c, int pid)
 {
 	int	x;
 
@@ -36,24 +36,30 @@ void	ft_conv(char c, int pid)
 	}
 }
 
-void	ft_pidconv(char c, int pid)
+static void	ft_pidconv(char c, int pid, char *my_pid)
 {
 	int	x;
+	int	check;
 
 	x = 0;
 	while (x < 8)
 	{
 		if ((c % 2) == 0)
-			kill(pid, SIGUSR1);
+			check = kill(pid, SIGUSR1);
 		else
-			kill(pid, SIGUSR2);
+			check = kill(pid, SIGUSR2);
+		if (check == -1 && my_pid)
+		{
+			free(my_pid);
+			exit(1);
+		}
 		c = c >> 1;
 		x++;
 		usleep(200);
 	}
 }
 
-void	ft_msgover(int signal)
+static void	ft_msgover(int signal)
 {
 	g_check = 0;
 	if (signal == SIGUSR2)
@@ -66,25 +72,25 @@ void	ft_msgover(int signal)
 int	main(int ac, char **av)
 {
 	int		i;
-	int		s;
+	int		j;
 	char	*pid;
 
 	i = 0;
-	s = 0;
+	j = 0;
 	pid = ft_itoa(getpid());
 	signal(SIGUSR2, ft_msgover);
 	signal(SIGUSR1, ft_msgover);
-	if (ac == 3 && av[2][0] && ft_atoi(av[1]))
+	if (ac == 3 && av[2][0] && ft_atoi(av[1]) > 0)
 	{
 		while (pid[i] != '\0')
 		{
-			ft_pidconv(pid[i], ft_atoi(av[1]));
+			ft_pidconv(pid[i], ft_atoi(av[1]), pid);
 			i++;
 		}
 		free(pid);
-		ft_pidconv('\0', ft_atoi(av[1]));
-		while (av[2][s] != '\0')
-			ft_conv(av[2][s++], ft_atoi(av[1]));
+		ft_pidconv('\0', ft_atoi(av[1]), NULL);
+		while (av[2][j] != '\0')
+			ft_conv(av[2][j++], ft_atoi(av[1]));
 		ft_conv('\n', ft_atoi(av[1]));
 		ft_conv('\0', ft_atoi(av[1]));
 	}
